@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Python で ユニットテスト</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>Python で ユニットテスト</section>
+				<section><img src="genlogo.png"></section>
+				<section>
+標準パッケージunittestを使ったロジックテスト
+<pre><code>
+import unittest
+
+
+class TestCase(unittest.TestCase):
+    def test_upper(self):
+        s = "Hello"
+        self.assertEqual(s.upper(), "HELLO")
+
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+				</section>
+				<section>
+PyQt5におけるGUIテスト
+<pre><code>
+import unittest
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtTest import QTest
+
+
+if QApplication.instance() is None:
+    import sys
+    app = QApplication(sys.argv)
+
+
+class TestCase(unittest.TestCase):
+    def test_key_input(self):
+        w = QLineEdit()
+        QTest.keyClicks(w, "Hello")
+        self.assertEqual(w.text(), "Hello")
+
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+				</section>
+				<section>
+ソースとテストを分けた場合
+<pre><code># mymath.py
+def add(a, b):
+    return a + b
+</code></pre>
+<pre><code># testmymath.py
+import unittest
+import mymath  # ../src/mymath.py
+
+
+class TestCase(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(mymath.add(2, 3), 5)
+
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+				</section>
+				<section>
+テスト用ファイル構造
+<pre><code>
++ src/                                   
+  __init__.py                            
++ test/                                  
+  unittest-tutorial_test.py              
+setup.py                               
+</code></pre>
+<pre><code>&gt; python setup.py test
+</code></pre>
+				</section>
+				<section>
+<pre><code># setup.py
+from setuptools import setup, find_packages
+import sys
+sys.path.append('./src')
+sys.path.append('./test')
+
+setup(
+    name = "unittest-tutorial",
+    version = "0.1",
+    packages = find_packages(),
+    test_suite = 'unittest-tutorial_test.suite'
+)
+</code></pre>
+<pre><code># src/__init__.py
+from unittest-tutorial import *
+</code></pre>
+				</section>
+				<section>
+<pre><code># test/unittest-tutorial_test.py
+import unittest
+import os
+import glob
+import importlib
+
+
+def suite():
+    suite = unittest.TestSuite()
+    dirname = os.path.abspath(os.path.dirname(__file__))
+    pathname = dirname + os.sep + 'test*' + os.extsep + 'py'
+    for path in glob.glob(pathname):
+        basename, ext = os.path.splitext(os.path.basename(path))
+        name = 'test.' + basename
+        spec = importlib.util.spec_from_file_location(name, path)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        suite.addTests(unittest.makeSuite(m.TestCase))
+    return suite
+</code></pre>
+				</section>
+				<section data-markdown>
+					[Let's run unittest!!](https://github.com/dNaga392/devipl170620)
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
