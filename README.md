@@ -1,6 +1,6 @@
 # Python で ユニットテスト
 
-このリポジトリは[DevIPL/2017spring](https://github.com/DevIPL/2017spring)の発表資料です。 [GitHub Pages](https://dnaga392.github.io/devipl170620/).
+このリポジトリは[DevIPL/2017spring](https://github.com/DevIPL/2017spring)の発表資料です。 [GitHub Pages](https://nagayama1147.github.io/devipl170620/).
 
 私が Python でユニットテストするときの枠組みを紹介しました。
 
@@ -9,7 +9,7 @@
 PythonとGitが実行できる場合：
 
 ```console
-> git clone git@github.com:dNaga392/devipl170620.git
+> git clone git@github.com:nagayama1147/devipl170620.git
 > rm test/testqlineedit.py
 > python setup.py test
 ```
